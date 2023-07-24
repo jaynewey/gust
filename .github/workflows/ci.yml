@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main, devel]
+  pull_request:
+    branches: [main, devel]
+
+permissions:
+  contents: write
+
+jobs:
+  ci:
+    concurrency: ci-${{ github.ref }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly-2023-07-23
+          override: true
+          target: wasm32-unknown-unknown
+          components: rustfmt, clippy
+
+      - name: Install
+        run: |
+          cargo install trunk
+          curl -LSfs https://avencera.github.io/rustywind/install.sh | sh -s -- --git avencera/rustywind 
+          : # NOTE: we will want to check with leptosfmt when it is possible (https://github.com/bram209/leptosfmt/issues/12)
+          curl -sL https://github.com/tailwindlabs/tailwindcss/releases/download/v3.3.3/tailwindcss-linux-x64 -o tailwindcss
+          chmod +x tailwindcss
+          mv tailwindcss /usr/local/bin/
+
+      - name: Check formatting
+        run: |
+          cargo fmt --check
+          rustywind --check-formatted src
+
+      - name: Check lints
+        run: cargo clippy
+
+      - name: Build
+        run: FORECAST_ENDPOINT=https://api.open-meteo.com/v1 GEOCODING_ENDPOINT=https://geocoding-api.open-meteo.com/v1 trunk build --release

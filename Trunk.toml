@@ -1,0 +1,10 @@
+[watch]
+watch = ["src"]
+
+[build]
+public_url = "/gust/"
+
+[[hooks]]
+stage = "pre_build"
+command = "tailwindcss"
+command_arguments = ["-i", "src/input.css", "-o", "tailwind.css"]

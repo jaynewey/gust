@@ -1,0 +1,36 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    concurrency: ci-${{ github.ref }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly-2023-07-23
+          target: wasm32-unknown-unknown
+
+      - name: Install and Build
+        run: |
+          cargo install trunk
+          curl -sL https://github.com/tailwindlabs/tailwindcss/releases/download/v3.3.3/tailwindcss-linux-x64 -o tailwindcss
+          chmod +x tailwindcss
+          mv tailwindcss /usr/local/bin/
+          FORECAST_ENDPOINT=https://api.open-meteo.com/v1 GEOCODING_ENDPOINT=https://geocoding-api.open-meteo.com/v1 trunk build --release
+          touch ./dist/.nojekyll
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist

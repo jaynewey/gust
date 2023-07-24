@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Manrope";
+  src: url("Manrope.ttf");
+}
+
+@layer components {
+  *::-webkit-scrollbar {
+    @apply w-0.5 h-0.5;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-current;
+  }
+
+  *::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+}
