@@ -1,0 +1,16 @@
+{
+  "name": "Gust Open Source Weather App",
+  "short_name": "Gust Weather",
+  "lang": "en-GB",
+  "start_url": "./index.html",
+  "icons": [
+    {
+      "src": "./assets/icon-256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
+  ],
+  "display": "standalone",
+  "background_color": "white",
+  "theme_color": "white"
+}
