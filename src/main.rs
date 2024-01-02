@@ -1,6 +1,8 @@
 #![allow(non_snake_case)]
 #![feature(exclusive_range_pattern)]
 
+use std::collections::HashSet;
+
 use chrono::Utc;
 use itertools::izip;
 use leptos::*;
@@ -44,6 +46,7 @@ pub enum Metric {
 const LOCAL_SERVER: &str = "http://127.0.0.1:8081";
 const FORECAST_ENDPOINT: Option<&'static str> = option_env!("FORECAST_ENDPOINT");
 const GEOCODING_ENDPOINT: Option<&'static str> = option_env!("GEOCODING_ENDPOINT");
+pub const FLAG_ICONS_ENDPOINT: &str = "https://hatscripts.github.io/circle-flags/flags";
 
 fn main() {
     console_log::init_with_level(log::Level::Debug).unwrap();
@@ -67,6 +70,12 @@ fn main() {
 
         let (location, set_location) = create_signal(cx, LocalStorage::get("location").ok());
         create_effect(cx, move |_| LocalStorage::set("location", location()));
+
+        let (starred, set_starred): (
+            ReadSignal<HashSet<Location>>,
+            WriteSignal<HashSet<Location>>,
+        ) = create_signal(cx, LocalStorage::get("starred").unwrap_or(HashSet::new()));
+        create_effect(cx, move |_| LocalStorage::set("starred", starred()));
 
         let forecast = create_resource(cx, location, |location: Option<Location>| async move {
             let location = location?;
@@ -139,7 +148,7 @@ fn main() {
                     )
                 }>
                     <div class="flex flex-col col-span-1 p-4 lg:col-span-3">
-                        <Today forecast=forecast time=(time, set_time) metric=(metric, set_metric) location=(location, set_location) current=current/>
+                        <Today forecast=forecast time=(time, set_time) metric=(metric, set_metric) location=(location, set_location) starred=(starred, set_starred) current=current/>
                         <Hourly forecast=forecast time=(time, set_time) metric=metric/>
                     </div>
                     <div class="flex flex-col col-span-1 p-4 md:h-screen">

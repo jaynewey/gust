@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use std::hash::{Hash, Hasher};
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub struct Location {
@@ -12,6 +13,23 @@ pub struct Location {
     pub admin3: Option<String>,
     pub admin4: Option<String>,
 }
+
+impl Hash for Location {
+    fn hash<H>(&self, state: &mut H)
+    where
+        H: Hasher,
+    {
+        self.name.hash(state);
+        self.country.hash(state);
+        self.country_code.hash(state);
+        self.admin1.hash(state);
+        self.admin2.hash(state);
+        self.admin3.hash(state);
+        self.admin4.hash(state);
+    }
+}
+
+impl Eq for Location {}
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub struct Locations {
