@@ -11,7 +11,7 @@ gloo-storage = "0.2.2"
 gloo-timers = "0.2.6"
 itertools = "0.11.0"
 leptos = { version = "0.4.1", features = ["csr", "nightly"] }
-leptos_icons = { git = "https://github.com/Carlosted/leptos-icons", features = ["macros", "LuCloud", "LuSun", "LuCloudy", "LuCloudSun", "LuCloudRain", "LuMoon", "LuCloudMoon", "LuUndo2", "LuDroplet", "LuDroplets", "LuThermometer", "LuSearch", "LuCloudLightning", "LuCloudSnow", "LuCloudFog", "LuCloudRainWind", "LuCloudDrizzle", "LuCloudHail", "LuArrowUp", "LuArrowUpRight","LuArrowRight", "LuArrowDownRight", "LuArrowDown", "LuArrowDownLeft",  "LuArrowLeft",  "LuArrowUpLeft", "LuWind"] }
+leptos_icons = { git = "https://github.com/Carlosted/leptos-icons", features = ["macros", "LuCloud", "LuSun", "LuCloudy", "LuCloudSun", "LuCloudRain", "LuMoon", "LuCloudMoon", "LuUndo2", "LuDroplet", "LuDroplets", "LuThermometer", "LuSearch", "LuCloudLightning", "LuCloudSnow", "LuCloudFog", "LuCloudRainWind", "LuCloudDrizzle", "LuCloudHail", "LuArrowUp", "LuArrowUpRight","LuArrowRight", "LuArrowDownRight", "LuArrowDown", "LuArrowDownLeft",  "LuArrowLeft",  "LuArrowUpLeft", "LuWind", "LuStar", "LuX"] }
 log = "0.4.19"
 serde = "1.0.166"
 web-sys = { version = "0.3.64", features = ["Window", "ServiceWorkerContainer", "Navigator"] }

@@ -1,13 +1,16 @@
+use std::collections::HashSet;
+
 use gloo_net::http::Request;
 use gloo_timers::callback::Timeout;
 use itertools::Itertools;
 use leptos_icons::Icon;
-use leptos_icons::LuIcon::LuSearch;
+use leptos_icons::LuIcon::{LuSearch, LuStar};
 
 use leptos::*;
 
 use crate::locations::{Location, Locations};
 use crate::palette::Palette;
+use crate::FLAG_ICONS_ENDPOINT;
 use crate::{GEOCODING_ENDPOINT, LOCAL_SERVER};
 
 const DEBOUNCE_TIMEOUT: u32 = 500;
@@ -16,11 +19,16 @@ const DEBOUNCE_TIMEOUT: u32 = 500;
 pub fn Search(
     cx: Scope,
     location: (ReadSignal<Option<Location>>, WriteSignal<Option<Location>>),
+    starred: (
+        ReadSignal<HashSet<Location>>,
+        WriteSignal<HashSet<Location>>,
+    ),
 ) -> impl IntoView {
     let (palette, _) = use_context::<(ReadSignal<Palette<'_>>, WriteSignal<Palette<'_>>)>(cx)
         .expect("palette context");
 
     let (location, set_location) = location;
+    let (starred, set_starred) = starred;
     let (search, set_search) = create_signal(cx, "".to_string());
 
     let (is_focussed, set_is_focussed) = create_signal(cx, false);
@@ -110,10 +118,7 @@ pub fn Search(
                                             class="flex overflow-x-auto overflow-y-hidden gap-x-4 content-center py-4 transition-transform cursor-pointer hover:scale-105 active:scale-95"
                                         >
                                             <img
-                                                src=format!(
-                                                    "https://hatscripts.github.io/circle-flags/flags/{}.svg", location.country_code
-                                                    .to_lowercase()
-                                                )
+                                                src=format!("{}/{}.svg", FLAG_ICONS_ENDPOINT, location.country_code.to_lowercase())
                                                 width=24
                                                 class="my-auto"
                                             />
@@ -138,6 +143,26 @@ pub fn Search(
                     )
                 }}
             </ul>
+            <button
+                on:click=move |_| {
+                    if let Some(location) = location() {
+                        let mut starred = starred().clone();
+                        if starred.contains(&location) {
+                            starred.remove(&location);
+                        } else {
+                            starred.insert(location);
+                        }
+                        set_starred(starred);
+                    }
+                }
+                class="my-auto hover:opacity-75 hover:scale-105 active:scale-95 shrink-0"
+                class=(
+                    "opacity-50",
+                    move || location().map(|location| !starred().contains(&location)).unwrap_or(false),
+                )
+            >
+                <Icon width="24" height="24" icon=Icon::from(LuStar)/>
+            </button>
         </div>
     }
 }
