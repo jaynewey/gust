@@ -100,11 +100,11 @@ pub fn Hourly(
                                             }}
                                             <p class="mx-auto">
                                                 {move || match metric() {
-                                                    Metric::Temperature => format!("{}°", temperature).into_view(cx),
+                                                    Metric::Temperature => format!("{}°", temperature.round() as i32).into_view(cx),
                                                     Metric::Precipitation => format!("{}%", precipitation_probability).into_view(cx),
                                                     Metric::Wind => {
                                                         view! { cx,
-                                                            <span>{windspeed}</span>
+                                                            <span>{windspeed.round() as i32}</span>
                                                             <span class="pl-1 text-xs">"km/h"</span>
                                                         }
                                                             .into_view(cx)
