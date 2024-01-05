@@ -23,7 +23,7 @@ pub fn Daily(
 ) -> impl IntoView {
     let (palette, _) = use_context::<(ReadSignal<Palette<'_>>, WriteSignal<Palette<'_>>)>(cx)
         .expect("palette context");
-    let (_, set_time) = time;
+    let (time, set_time) = time;
 
     view! { cx,
         <div class="flex flex-col gap-y-4 mx-auto w-full rounded-3xl grow justify-stretch">
@@ -54,11 +54,23 @@ pub fn Daily(
                             let month = Month::try_from(u8::try_from(datetime.month()).unwrap_or(0))
                                 .ok()?;
                             let now = Utc::now().timestamp();
+                            let later: DateTime<FixedOffset> = DateTime::from_utc(
+                                NaiveDateTime::from_timestamp_opt(this_time, 0)?
+                                    .date()
+                                    .and_time(
+                                        NaiveDateTime::from_timestamp_opt(time().into(), 0)?.time(),
+                                    ),
+                                offset,
+                            );
                             Some(
                                 view! { cx,
                                     <button
                                         on:click=move |_| set_time(
-                                            if this_time < now { CurrentTime::Now(now) } else { CurrentTime::Later(this_time) },
+                                            if this_time < now {
+                                                CurrentTime::Now(now)
+                                            } else {
+                                                CurrentTime::Later(later.timestamp())
+                                            },
                                         )
                                         class=move || {
                                             format!(
