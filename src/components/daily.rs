@@ -7,7 +7,7 @@ use crate::palette::Palette;
 use crate::time::day_name;
 use crate::Metric;
 use crate::{
-    weather::{weather_icon, wind_direction_icon},
+    weather::{weather_description, weather_icon, wind_direction_icon},
     CurrentTime,
 };
 use chrono::{DateTime, Datelike, FixedOffset, Month, NaiveDateTime, Utc};
@@ -101,7 +101,12 @@ pub fn Daily(
                                             </p>
                                             {move || match metric() {
                                                 Metric::Temperature => {
-                                                    view! { cx, <Icon width="24" height="24" class="my-auto" icon=weather_icon(weathercode, true)/> }
+                                                    view! { cx,
+                                                        <div class="my-auto" title=weather_description(weathercode, true)>
+                                                            <Icon width="24" height="24" icon=weather_icon(weathercode, true)/>
+                                                        </div>
+                                                    }
+                                                        .into_view(cx)
                                                 }
                                                 Metric::Precipitation => {
                                                     view! { cx,
