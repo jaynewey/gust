@@ -7,7 +7,7 @@ use crate::forecast::Forecast;
 use crate::locations::Location;
 use crate::palette::Palette;
 use crate::{
-    weather::{weather_icon, wind_direction_icon},
+    weather::{weather_description, weather_icon, wind_direction_icon},
     CurrentTime,
 };
 use chrono::{DateTime, Duration, FixedOffset, NaiveDateTime, Timelike, Utc};
@@ -82,7 +82,12 @@ pub fn Hourly(
                                             </p>
                                             {move || match metric() {
                                                 Metric::Temperature => {
-                                                    view! { cx, <Icon width="24" height="24" class="mx-auto" icon=weather_icon(weathercode, is_day)/> }
+                                                    view! { cx,
+                                                        <div class="mx-auto" title=weather_description(weathercode, true)>
+                                                            <Icon width="24" height="24" icon=weather_icon(weathercode, is_day)/>
+                                                        </div>
+                                                    }
+                                                        .into_view(cx)
                                                 }
                                                 Metric::Precipitation => {
                                                     view! { cx,

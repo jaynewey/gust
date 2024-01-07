@@ -146,22 +146,22 @@ pub fn Today(
                         {
                             view! {
                                 cx, < div class = "items-center text-center" > < h1 class =
-                                "my-4 text-7xl font-bold sm:text-8xl" > { temperature_2m.round() as i32 } "°" </ h1 > <
-                                p class = "text-lg" > Feels like { apparent_temperature.round() as i32 } "°" </ p > <
-                                div class = "flex gap-x-2 justify-center items-center my-2" > < Icon
-                                class = "shrink-0" width = "16" height = "16" icon =
-                                weather_icon(weathercode, is_day) /> < p class = "text-sm" > {
-                                weather_description(weathercode, is_day) } </ p > </ div > </ div > < div
-                                class = "flex gap-x-4 mx-auto" > < MetricButton metric =
-                                Metric::Temperature selected_metric = (metric, set_metric) icon =
-                                Icon::from(LuThermometer) > { format!("{}°", temperature_2m.round() as i32) } </
-                                MetricButton > < MetricButton metric = Metric::Precipitation
-                                selected_metric = (metric, set_metric) icon = Icon::from(LuDroplets) > {
-                                format!("{}%", precipitation_probability) } </ MetricButton > <
-                                MetricButton metric = Metric::Wind selected_metric = (metric, set_metric)
-                                icon = Icon::from(LuWind) >< span > { windspeed.round() as i32 } < span class =
-                                "pl-1 text-xs" > "km/h" </ span ></ span ></ MetricButton > </ div > <
-                                div class =
+                                "my-4 text-7xl font-bold sm:text-8xl" > { temperature_2m.round() as i32 }
+                                "°" </ h1 > < p class = "text-lg" > Feels like { apparent_temperature
+                                .round() as i32 } "°" </ p > < div class =
+                                "flex gap-x-2 justify-center items-center my-2" > < Icon class =
+                                "shrink-0" width = "16" height = "16" icon = weather_icon(weathercode,
+                                is_day) /> < p class = "text-sm" > { weather_description(weathercode,
+                                is_day) } </ p > </ div > </ div > < div class = "flex gap-x-4 mx-auto" >
+                                < MetricButton metric = Metric::Temperature selected_metric = (metric,
+                                set_metric) icon = Icon::from(LuThermometer) > { format!("{}°",
+                                temperature_2m.round() as i32) } </ MetricButton > < MetricButton metric
+                                = Metric::Precipitation selected_metric = (metric, set_metric) icon =
+                                Icon::from(LuDroplets) > { format!("{}%", precipitation_probability) } </
+                                MetricButton > < MetricButton metric = Metric::Wind selected_metric =
+                                (metric, set_metric) icon = Icon::from(LuWind) >< span > { windspeed
+                                .round() as i32 } < span class = "pl-1 text-xs" > "km/h" </ span ></ span
+                                ></ MetricButton > </ div > < div class =
                                 "flex overflow-x-auto gap-x-4 p-2 mx-auto max-w-full text-sm whitespace-nowrap"
                                 > { move || starred().into_iter().map(| starred_location | { view! { cx,
                                 < LocationButton location = starred_location.clone() selected_location =
