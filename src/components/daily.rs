@@ -54,14 +54,12 @@ pub fn Daily(
                             let month = Month::try_from(u8::try_from(datetime.month()).unwrap_or(0))
                                 .ok()?;
                             let now = Utc::now().timestamp();
-                            let later: DateTime<FixedOffset> = DateTime::from_utc(
-                                NaiveDateTime::from_timestamp_opt(this_time, 0)?
+                            let later =
+                                NaiveDateTime::from_timestamp_opt(this_time + offset.local_minus_utc() as i64, 0)?
                                     .date()
                                     .and_time(
                                         NaiveDateTime::from_timestamp_opt(time().into(), 0)?.time(),
-                                    ),
-                                offset,
-                            );
+                                    );
                             Some(
                                 view! { cx,
                                     <button
