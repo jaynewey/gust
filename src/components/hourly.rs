@@ -83,7 +83,7 @@ pub fn Hourly(
                                             {move || match metric() {
                                                 Metric::Temperature => {
                                                     view! { cx,
-                                                        <div class="mx-auto" title=weather_description(weathercode, true)>
+                                                        <div class="mx-auto" title=weather_description(weathercode, is_day)>
                                                             <Icon width="24" height="24" icon=weather_icon(weathercode, is_day)/>
                                                         </div>
                                                     }
