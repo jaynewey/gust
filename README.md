@@ -58,6 +58,12 @@ leptosfmt src
 rustywind src
 ```
 
+`clippy` lints are also enforced:
+
+```sh
+cargo clippy
+```
+
 ---
 
 [Weather data by Open-Meteo.com](https://open-meteo.com/)
