@@ -148,28 +148,35 @@ pub fn Search(
                     )
                 }}
             </ul>
-            <button
-                on:click=move |_| {
-                    if let Some(location) = location() {
-                        let mut starred = starred().clone();
-                        if starred.contains(&location) {
-                            starred.remove(&location);
-                        } else {
-                            starred.insert(location);
+            {move || {
+                location()
+                    .map(|_| {
+                        view! { cx,
+                            <button
+                                on:click=move |_| {
+                                    if let Some(location) = location() {
+                                        let mut starred = starred().clone();
+                                        if starred.contains(&location) {
+                                            starred.remove(&location);
+                                        } else {
+                                            starred.insert(location);
+                                        }
+                                        set_starred(starred);
+                                    }
+                                }
+                                class="my-auto hover:opacity-75 hover:scale-105 active:scale-95 shrink-0 group/star"
+                                class=("opacity-50", !location_is_starred())
+                            >
+                                <span class=("group-hover/star:hidden", location_is_starred())>
+                                    <Icon width="24" height="24" icon=Icon::from(LuStar)/>
+                                </span>
+                                <span class="hidden" class=("group-hover/star:block", location_is_starred())>
+                                    <Icon width="24" height="24" icon=Icon::from(LuStarOff)/>
+                                </span>
+                            </button>
                         }
-                        set_starred(starred);
-                    }
-                }
-                class="my-auto hover:opacity-75 hover:scale-105 active:scale-95 shrink-0 group/star"
-                class=("opacity-50", !location_is_starred())
-            >
-                <span class=("group-hover/star:hidden", location_is_starred())>
-                    <Icon width="24" height="24" icon=Icon::from(LuStar)/>
-                </span>
-                <span class="hidden" class=("group-hover/star:block", location_is_starred())>
-                    <Icon width="24" height="24" icon=Icon::from(LuStarOff)/>
-                </span>
-            </button>
+                    })
+            }}
         </div>
     }
 }
