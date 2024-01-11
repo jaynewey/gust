@@ -4,7 +4,7 @@ use gloo_net::http::Request;
 use gloo_timers::callback::Timeout;
 use itertools::Itertools;
 use leptos_icons::Icon;
-use leptos_icons::LuIcon::{LuSearch, LuStar};
+use leptos_icons::LuIcon::{LuSearch, LuStar, LuStarOff};
 
 use leptos::*;
 
@@ -75,6 +75,11 @@ pub fn Search(
         } else {
             search()
         }
+    };
+    let location_is_starred = move || {
+        location()
+            .map(|location| starred().contains(&location))
+            .unwrap_or(false)
     };
 
     view! { cx,
@@ -155,13 +160,15 @@ pub fn Search(
                         set_starred(starred);
                     }
                 }
-                class="my-auto hover:opacity-75 hover:scale-105 active:scale-95 shrink-0"
-                class=(
-                    "opacity-50",
-                    move || location().map(|location| !starred().contains(&location)).unwrap_or(false),
-                )
+                class="my-auto hover:opacity-75 hover:scale-105 active:scale-95 shrink-0 group/star"
+                class=("opacity-50", !location_is_starred())
             >
-                <Icon width="24" height="24" icon=Icon::from(LuStar)/>
+                <span class=("group-hover/star:hidden", location_is_starred())>
+                    <Icon width="24" height="24" icon=Icon::from(LuStar)/>
+                </span>
+                <span class="hidden" class=("group-hover/star:block", location_is_starred())>
+                    <Icon width="24" height="24" icon=Icon::from(LuStarOff)/>
+                </span>
             </button>
         </div>
     }
