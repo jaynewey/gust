@@ -99,9 +99,10 @@ pub fn Search(
                 class=move || {
                     format!(
                         "absolute flex flex-col justify-between z-20 top-full px-4 invisible group-focus-within:visible opacity-0 group-focus-within:opacity-100 transition backdrop-blur-md rounded-3xl mt-4 w-full max-h-[75vh] drop-shadow-sm {}",
-                        palette().background
+                        palette().background,
                     )
                 }
+
                 class=("hidden", move || { value().len() <= 1 })
             >
                 {move || {
@@ -120,25 +121,37 @@ pub fn Search(
                                                 set_location(Some(location_clone.clone()));
                                                 set_search("".to_string())
                                             }
+
                                             class="flex overflow-x-auto overflow-y-hidden gap-x-4 content-center py-4 transition-transform cursor-pointer hover:scale-105 active:scale-95"
                                         >
                                             <img
-                                                src=format!("{}/{}.svg", FLAG_ICONS_ENDPOINT, location.country_code.to_lowercase())
+                                                src=format!(
+                                                    "{}/{}.svg",
+                                                    FLAG_ICONS_ENDPOINT,
+                                                    location.country_code.to_lowercase(),
+                                                )
+
                                                 width=24
                                                 class="my-auto"
                                             />
                                             <span class="whitespace-nowrap">
+
                                                 {
                                                     let location = location.clone();
                                                     vec![
-                                                        Some(location.name), location.admin4, location.admin3, location.admin2, location
-                                                        .admin1, Some(location.country)
+                                                        Some(location.name),
+                                                        location.admin4,
+                                                        location.admin3,
+                                                        location.admin2,
+                                                        location.admin1,
+                                                        Some(location.country),
                                                     ]
                                                         .into_iter()
                                                         .flatten()
                                                         .dedup()
                                                         .join(", ")
                                                 }
+
                                             </span>
                                         </button>
                                     },
@@ -147,6 +160,7 @@ pub fn Search(
                             .collect_view(cx),
                     )
                 }}
+
             </ul>
             {move || {
                 location()
@@ -164,19 +178,24 @@ pub fn Search(
                                         set_starred(starred);
                                     }
                                 }
+
                                 class="my-auto hover:opacity-75 hover:scale-105 active:scale-95 shrink-0 group/star"
                                 class=("opacity-50", !location_is_starred())
                             >
                                 <span class=("group-hover/star:hidden", location_is_starred())>
                                     <Icon width="24" height="24" icon=Icon::from(LuStar)/>
                                 </span>
-                                <span class="hidden" class=("group-hover/star:block", location_is_starred())>
+                                <span
+                                    class="hidden"
+                                    class=("group-hover/star:block", location_is_starred())
+                                >
                                     <Icon width="24" height="24" icon=Icon::from(LuStarOff)/>
                                 </span>
                             </button>
                         }
                     })
             }}
+
         </div>
     }
 }

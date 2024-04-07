@@ -28,7 +28,7 @@ pub fn Hourly(
         <div class=move || {
             format!(
                 "flex max-w-full shrink mt-auto mx-auto drop-shadow-sm backdrop-blur-sm rounded-3xl overflow-x-auto gap-8 px-6 py-4 empty:hidden {}",
-                palette().background
+                palette().background,
             )
         }>
             {move || {
@@ -67,47 +67,83 @@ pub fn Hourly(
                                 .contains(&(other_time + forecast.utc_offset_seconds as i64))
                             {
                                 Some(
+
                                     view! { cx,
                                         <button
                                             on:click=move |_| set_time(CurrentTime::Later(other_time))
                                             class="flex flex-col gap-y-2 justify-center w-16 text-center transition-transform hover:scale-105 active:scale-95"
                                         >
                                             <p class="mx-auto text-xs">
-                                                {if let Some(naive_datetime) = NaiveDateTime::from_timestamp_opt(other_time, 0) {
-                                                    let datetime: DateTime<FixedOffset> = DateTime::from_utc(naive_datetime, offset);
+                                                {if let Some(naive_datetime) = NaiveDateTime::from_timestamp_opt(
+                                                    other_time,
+                                                    0,
+                                                ) {
+                                                    let datetime: DateTime<FixedOffset> = DateTime::from_utc(
+                                                        naive_datetime,
+                                                        offset,
+                                                    );
                                                     format!("{:02}:{:02}", datetime.hour(), datetime.minute())
                                                 } else {
                                                     String::from("?")
                                                 }}
+
                                             </p>
                                             {move || match metric() {
                                                 Metric::Temperature => {
                                                     view! { cx,
-                                                        <div class="mx-auto" title=weather_description(weathercode, is_day)>
-                                                            <Icon width="24" height="24" icon=weather_icon(weathercode, is_day)/>
+                                                        <div
+                                                            class="mx-auto"
+                                                            title=weather_description(weathercode, is_day)
+                                                        >
+                                                            <Icon
+                                                                width="24"
+                                                                height="24"
+                                                                icon=weather_icon(weathercode, is_day)
+                                                            />
                                                         </div>
                                                     }
                                                         .into_view(cx)
                                                 }
                                                 Metric::Precipitation => {
+
                                                     view! { cx,
                                                         <Icon
                                                             width="24"
                                                             height="24"
                                                             class="mx-auto"
-                                                            icon=Icon::from(if precipitation_probability > 75 { LuDroplets } else { LuDroplet })
+                                                            icon=Icon::from(
+                                                                if precipitation_probability > 75 {
+                                                                    LuDroplets
+                                                                } else {
+                                                                    LuDroplet
+                                                                },
+                                                            )
                                                         />
                                                     }
                                                 }
                                                 Metric::Wind => {
-                                                    view! { cx, <Icon width="24" height="24" class="mx-auto" icon=wind_direction_icon(winddirection)/> }
+
+                                                    view! { cx,
+                                                        <Icon
+                                                            width="24"
+                                                            height="24"
+                                                            class="mx-auto"
+                                                            icon=wind_direction_icon(winddirection)
+                                                        />
+                                                    }
                                                 }
                                             }}
+
                                             <p class="mx-auto">
                                                 {move || match metric() {
-                                                    Metric::Temperature => format!("{}°", temperature.round() as i32).into_view(cx),
-                                                    Metric::Precipitation => format!("{}%", precipitation_probability).into_view(cx),
+                                                    Metric::Temperature => {
+                                                        format!("{}°", temperature.round() as i32).into_view(cx)
+                                                    }
+                                                    Metric::Precipitation => {
+                                                        format!("{}%", precipitation_probability).into_view(cx)
+                                                    }
                                                     Metric::Wind => {
+
                                                         view! { cx,
                                                             <span>{windspeed.round() as i32}</span>
                                                             <span class="pl-1 text-xs">"km/h"</span>
@@ -115,6 +151,7 @@ pub fn Hourly(
                                                             .into_view(cx)
                                                     }
                                                 }}
+
                                             </p>
                                         </button>
                                     },
@@ -126,6 +163,7 @@ pub fn Hourly(
                         .collect_view(cx),
                 )
             }}
+
         </div>
     }.into_view(cx)
 }

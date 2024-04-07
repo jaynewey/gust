@@ -143,31 +143,56 @@ fn main() {
         provide_context(cx, current);
 
         view! { cx,
-            <Scene />
-                <div class=move || {
-                    format!(
-                        "w-screen h-screen font-sans md:grid md:grid-cols-2 lg:grid-cols-4 {}", palette()
-                        .text
-                    )
-                }>
-                    <div class="flex flex-col col-span-1 p-4 lg:col-span-3">
-                        <Today forecast=forecast time=(time, set_time) metric=(metric, set_metric) location=(location, set_location) starred=(starred, set_starred) current=current/>
-                        <Hourly forecast=forecast time=(time, set_time) metric=metric/>
-                    </div>
-                    <div class="flex flex-col col-span-1 p-4 md:h-screen">
-                        <Daily forecast=forecast time=(time, set_time) metric=metric/>
-                        <div class="flex overflow-x-auto flex-col gap-y-4 pb-2 mt-4 text-sm text-center text-white whitespace-nowrap opacity-50 transition-opacity md:flex-row md:gap-x-4 md:text-xs">
-                            <a target="_blank" class="flex gap-x-2 mx-auto hover:opacity-75" href="https://open-meteo.com/">
-                                <Icon class="my-auto" width="16" height="16" icon=Icon::from(LuExternalLink)/>
-                                <span class="my-auto">Weather data by Open-Meteo.com</span>
-                            </a>
-                            <a target="_blank" class="flex gap-x-2 mx-auto hover:opacity-75" href="https://github.com/jaynewey/gust/">
-                                <Icon class="my-auto" width="16" height="16" icon=Icon::from(LuGitFork)/>
-                                <span class="my-auto">Source Code</span>
-                            </a>
-                        </div>
+            <Scene/>
+            <div class=move || {
+                format!(
+                    "w-screen h-screen font-sans md:grid md:grid-cols-2 lg:grid-cols-4 {}",
+                    palette().text,
+                )
+            }>
+                <div class="flex flex-col col-span-1 p-4 lg:col-span-3">
+                    <Today
+                        forecast=forecast
+                        time=(time, set_time)
+                        metric=(metric, set_metric)
+                        location=(location, set_location)
+                        starred=(starred, set_starred)
+                        current=current
+                    />
+                    <Hourly forecast=forecast time=(time, set_time) metric=metric/>
+                </div>
+                <div class="flex flex-col col-span-1 p-4 md:h-screen">
+                    <Daily forecast=forecast time=(time, set_time) metric=metric/>
+                    <div class="flex overflow-x-auto flex-col gap-y-4 pb-2 mt-4 text-sm text-center text-white whitespace-nowrap opacity-50 transition-opacity md:flex-row md:gap-x-4 md:text-xs">
+                        <a
+                            target="_blank"
+                            class="flex gap-x-2 mx-auto hover:opacity-75"
+                            href="https://open-meteo.com/"
+                        >
+                            <Icon
+                                class="my-auto"
+                                width="16"
+                                height="16"
+                                icon=Icon::from(LuExternalLink)
+                            />
+                            <span class="my-auto">Weather data by Open-Meteo.com</span>
+                        </a>
+                        <a
+                            target="_blank"
+                            class="flex gap-x-2 mx-auto hover:opacity-75"
+                            href="https://github.com/jaynewey/gust/"
+                        >
+                            <Icon
+                                class="my-auto"
+                                width="16"
+                                height="16"
+                                icon=Icon::from(LuGitFork)
+                            />
+                            <span class="my-auto">Source Code</span>
+                        </a>
                     </div>
                 </div>
+            </div>
         }
     })
 }

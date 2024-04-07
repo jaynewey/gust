@@ -16,8 +16,7 @@ pub fn Balloon(
     view! { cx,
         <g
             transform=move || {
-                let (wind_x, wind_y) = if let Some((_, _, _, _, _, _, winddirection, windspeed))
-                    = current() {
+                let (wind_x, wind_y) = if let Some((_, _, _, _, _, _, winddirection, windspeed)) = current() {
                     let winddirection = (winddirection as f32).to_radians();
                     let x = windspeed * winddirection.sin();
                     let y = -windspeed * winddirection.cos();
@@ -27,6 +26,7 @@ pub fn Balloon(
                 };
                 format!("scale({}) translate({}, {})", scale, x + wind_x, y + wind_y)
             }
+
             class=(
                 "opacity-0",
                 move || {
@@ -38,6 +38,7 @@ pub fn Balloon(
                 },
             )
         >
+
             <g transform="translate(-74.935 -.2274)">
                 <g transform="matrix(.26458 0 0 .26458 7.202 -33.639)" class=move || palette().dark>
                     <path d="m288 239.05a0.94488 0.94488 0 0 0-0.66797 0.27734 0.94488 0.94488 0 0 0 0 1.3359l32 32a0.94488 0.94488 0 0 0 1.3359 0 0.94488 0.94488 0 0 0 0-1.3359l-32-32a0.94488 0.94488 0 0 0-0.66797-0.27734z"></path>

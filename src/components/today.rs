@@ -45,6 +45,7 @@ fn LocationButton(
                         set_starred(starred);
                     }
                 }
+
                 class="opacity-50 hover:opacity-100"
             >
                 <Icon width="16" height="16" icon=Icon::from(LuX)/>
@@ -111,24 +112,38 @@ pub fn Today(
                         Some(
                             view! { cx,
                                 <span>
-                                    {format!("{} on {}, {} {}", time, day_name(now.weekday()), now.day(), month.name())}
+                                    {format!(
+                                        "{} on {}, {} {}",
+                                        time,
+                                        day_name(now.weekday()),
+                                        now.day(),
+                                        month.name(),
+                                    )}
+
                                 </span>
                             },
                         )
-                    }} {move || match time() {
+                    }}
+                    {move || match time() {
                         CurrentTime::Now(_) => None,
                         CurrentTime::Later(_) => {
                             Some(
-                                view! {
-                                    cx, < button class =
-                                    "flex gap-x-1 py-1 px-2 my-auto text-xs rounded-full border border-current transition-opacity transition-transform hover:opacity-75 hover:scale-105 active:opacity-50 active:scale-95 backdrop-blur-md"
-                                    on : click = move | _ | set_time(CurrentTime::Now(Utc::now()
-                                    .timestamp())) >< Icon width = "16" height = "16" icon =
-                                    Icon::from(LuUndo2) />< p > now </ p ></ button >
+                                view! { cx,
+                                    <button
+                                        class="flex gap-x-1 py-1 px-2 my-auto text-xs rounded-full border border-current transition-opacity transition-transform hover:opacity-75 hover:scale-105 active:opacity-50 active:scale-95 backdrop-blur-md"
+                                        on:click=move |_| set_time(
+                                            CurrentTime::Now(Utc::now().timestamp()),
+                                        )
+                                    >
+
+                                        <Icon width="16" height="16" icon=Icon::from(LuUndo2)/>
+                                        <p>now</p>
+                                    </button>
                                 },
                             )
                         }
                     }}
+
                 </div>
                 {move || {
                     current()
@@ -144,36 +159,90 @@ pub fn Today(
                                 windspeed,
                             )|
                         {
-                            view! {
-                                cx, < div class = "items-center text-center" > < h1 class =
-                                "my-4 text-7xl font-bold sm:text-8xl" > { temperature_2m.round() as i32 }
-                                "°" </ h1 > < p class = "text-lg" > Feels like { apparent_temperature
-                                .round() as i32 } "°" </ p > < div class =
-                                "flex gap-x-2 justify-center items-center my-2" > < Icon class =
-                                "shrink-0" width = "16" height = "16" icon = weather_icon(weathercode,
-                                is_day) /> < p class = "text-sm" > { weather_description(weathercode,
-                                is_day) } </ p > </ div > </ div > < div class = "flex gap-x-4 mx-auto" >
-                                < MetricButton metric = Metric::Temperature selected_metric = (metric,
-                                set_metric) icon = Icon::from(LuThermometer) > { format!("{}°",
-                                temperature_2m.round() as i32) } </ MetricButton > < MetricButton metric
-                                = Metric::Precipitation selected_metric = (metric, set_metric) icon =
-                                Icon::from(LuDroplets) > { format!("{}%", precipitation_probability) } </
-                                MetricButton > < MetricButton metric = Metric::Wind selected_metric =
-                                (metric, set_metric) icon = Icon::from(LuWind) >< span > { windspeed
-                                .round() as i32 } < span class = "pl-1 text-xs" > "km/h" </ span ></ span
-                                ></ MetricButton > </ div > < div class =
-                                "flex overflow-x-auto gap-x-4 p-2 mx-auto max-w-full text-sm whitespace-nowrap"
-                                > { move || starred().into_iter().map(| starred_location | { view! { cx,
-                                < LocationButton location = starred_location.clone() selected_location =
-                                (location, set_location) starred = (starred, set_starred) > < div class =
-                                "w-4" > < img src = format!("{}/{}.svg", FLAG_ICONS_ENDPOINT,
-                                starred_location.country_code.to_lowercase()) width = 16 class =
-                                "my-auto" /> </ div > < span > { starred_location.name.clone() } </ span
-                                > </ LocationButton > } .into_view(cx) }).collect_view(cx) } </ div >
+
+                            view! { cx,
+                                <div class="items-center text-center">
+                                    <h1 class="my-4 text-7xl font-bold sm:text-8xl">
+                                        {temperature_2m.round() as i32} "°"
+                                    </h1>
+                                    <p class="text-lg">
+                                        Feels like {apparent_temperature.round() as i32} "°"
+                                    </p>
+                                    <div class="flex gap-x-2 justify-center items-center my-2">
+                                        <Icon
+                                            class="shrink-0"
+                                            width="16"
+                                            height="16"
+                                            icon=weather_icon(weathercode, is_day)
+                                        />
+                                        <p class="text-sm">
+                                            {weather_description(weathercode, is_day)}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-x-4 mx-auto">
+                                    <MetricButton
+                                        metric=Metric::Temperature
+                                        selected_metric=(metric, set_metric)
+                                        icon=Icon::from(LuThermometer)
+                                    >
+                                        {format!("{}°", temperature_2m.round() as i32)}
+                                    </MetricButton>
+                                    <MetricButton
+                                        metric=Metric::Precipitation
+                                        selected_metric=(metric, set_metric)
+                                        icon=Icon::from(LuDroplets)
+                                    >
+                                        {format!("{}%", precipitation_probability)}
+                                    </MetricButton>
+                                    <MetricButton
+                                        metric=Metric::Wind
+                                        selected_metric=(metric, set_metric)
+                                        icon=Icon::from(LuWind)
+                                    >
+                                        <span>
+                                            {windspeed.round() as i32}
+                                            <span class="pl-1 text-xs">"km/h"</span>
+                                        </span>
+                                    </MetricButton>
+                                </div>
+                                <div class="flex overflow-x-auto gap-x-4 p-2 mx-auto max-w-full text-sm whitespace-nowrap">
+                                    {move || {
+                                        starred()
+                                            .into_iter()
+                                            .map(|starred_location| {
+                                                view! { cx,
+                                                    <LocationButton
+                                                        location=starred_location.clone()
+                                                        selected_location=(location, set_location)
+                                                        starred=(starred, set_starred)
+                                                    >
+                                                        <div class="w-4">
+                                                            <img
+                                                                src=format!(
+                                                                    "{}/{}.svg",
+                                                                    FLAG_ICONS_ENDPOINT,
+                                                                    starred_location.country_code.to_lowercase(),
+                                                                )
+
+                                                                width=16
+                                                                class="my-auto"
+                                                            />
+                                                        </div>
+                                                        <span>{starred_location.name.clone()}</span>
+                                                    </LocationButton>
+                                                }
+                                                    .into_view(cx)
+                                            })
+                                            .collect_view(cx)
+                                    }}
+
+                                </div>
                             }
                                 .into_view(cx)
                         })
                 }}
+
             </div>
         </div>
     }
