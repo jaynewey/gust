@@ -18,7 +18,8 @@ jobs:
 
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: nightly-2023-07-23
+          toolchain: nightly-2023-12-27
+          override: true
           target: wasm32-unknown-unknown
 
       - name: Install and Build
