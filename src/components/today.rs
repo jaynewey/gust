@@ -29,6 +29,7 @@ fn LocationButton(
     let (selected_location, set_selected_location) = selected_location;
     let (starred, set_starred) = starred;
     let location_ = location.clone();
+    let location__ = location_.clone();
 
     view! { cx,
         <button
@@ -38,12 +39,11 @@ fn LocationButton(
         >
             {children(cx)}
             <button
-                on:click=move |_| {
-                    if let Some(selected_location) = selected_location() {
-                        let mut starred = starred().clone();
-                        starred.remove(&selected_location);
-                        set_starred(starred);
-                    }
+                on:click=move |event| {
+                    event.stop_propagation();
+                    let mut starred = starred().clone();
+                    starred.remove(&location__.clone());
+                    set_starred(starred);
                 }
 
                 class="opacity-50 hover:opacity-100"
