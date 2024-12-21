@@ -123,6 +123,7 @@ pub fn Search(
                                             }
 
                                             class="flex overflow-x-auto overflow-y-hidden gap-x-4 content-center py-4 transition-transform cursor-pointer hover:scale-105 active:scale-95"
+                                            tabindex="0"
                                         >
                                             <img
                                                 src=format!(
