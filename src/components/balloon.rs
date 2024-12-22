@@ -1,19 +1,18 @@
 use crate::palette::Palette;
-use leptos::*;
+use leptos::prelude::*;
 
 use crate::components::today::Hour;
 
 #[component]
 pub fn Balloon(
-    cx: Scope,
     scale: f32,
     translate: (f32, f32),
     palette: ReadSignal<Palette<'static>>,
 ) -> impl IntoView {
     let (x, y) = translate;
-    let current = use_context::<MaybeSignal<Option<Hour>>>(cx).expect("current forecast context");
+    let current = use_context::<Signal<Option<Hour>>>().expect("current forecast context");
 
-    view! { cx,
+    view! {
         <g
             transform=move || {
                 let (wind_x, wind_y) = if let Some((_, _, _, _, _, _, winddirection, windspeed)) = current() {

@@ -1,11 +1,10 @@
 #![allow(non_snake_case)]
-#![feature(exclusive_range_pattern)]
 
 use std::collections::HashSet;
 
 use chrono::Utc;
 use itertools::izip;
-use leptos::*;
+use leptos::prelude::*;
 pub mod components;
 use crate::components::daily::*;
 use crate::components::hourly::*;
@@ -25,7 +24,6 @@ use gloo_storage::{LocalStorage, Storage};
 use serde::{Deserialize, Serialize};
 
 use leptos_icons::Icon;
-use leptos_icons::LuIcon::{LuExternalLink, LuGitFork};
 
 #[derive(Clone)]
 pub enum CurrentTime {
@@ -51,6 +49,17 @@ const FORECAST_ENDPOINT: Option<&'static str> = option_env!("FORECAST_ENDPOINT")
 const GEOCODING_ENDPOINT: Option<&'static str> = option_env!("GEOCODING_ENDPOINT");
 pub const FLAG_ICONS_ENDPOINT: &str = "https://hatscripts.github.io/circle-flags/flags";
 
+async fn get_forecast(location: Option<Location>) -> Option<Forecast> {
+    let location = location?;
+    Some(Request::get(format!("{}/forecast?latitude={}&longitude={}&hourly=temperature_2m,apparent_temperature,precipitation_probability,windspeed_10m,winddirection_10m,weathercode,is_day&daily=weathercode,temperature_2m_max,precipitation_probability_max,windspeed_10m_max,winddirection_10m_dominant&timeformat=unixtime&timezone=auto", FORECAST_ENDPOINT.unwrap_or(LOCAL_SERVER), location.latitude, location.longitude).as_str())
+            .send()
+            .await
+            .unwrap()
+            .json::<Forecast>()
+            .await
+            .unwrap())
+}
+
 fn main() {
     console_log::init_with_level(log::Level::Debug).unwrap();
 
@@ -61,40 +70,33 @@ fn main() {
             .register("./service_worker.js");
     }
 
-    mount_to_body(|cx| {
-        let (palette, set_palette) = create_signal(cx, palette::CLEAR);
-        provide_context(cx, (palette, set_palette));
+    mount_to_body(|| {
+        let (palette, set_palette) = signal(palette::CLEAR);
+        provide_context((palette, set_palette));
 
-        let (metric, set_metric) = create_signal(
-            cx,
-            LocalStorage::get("metric").unwrap_or(Metric::Temperature),
-        );
-        create_effect(cx, move |_| LocalStorage::set("metric", metric()));
+        let (metric, set_metric) =
+            signal(LocalStorage::get("metric").unwrap_or(Metric::Temperature));
+        Effect::new(move |_| LocalStorage::set("metric", metric()));
 
-        let (location, set_location) = create_signal(cx, LocalStorage::get("location").ok());
-        create_effect(cx, move |_| LocalStorage::set("location", location()));
+        let (location, set_location) = signal(LocalStorage::get("location").ok());
+        Effect::new(move |_| LocalStorage::set("location", location()));
 
         let (starred, set_starred): (
             ReadSignal<HashSet<Location>>,
             WriteSignal<HashSet<Location>>,
-        ) = create_signal(cx, LocalStorage::get("starred").unwrap_or(HashSet::new()));
-        create_effect(cx, move |_| LocalStorage::set("starred", starred()));
+        ) = signal(LocalStorage::get("starred").unwrap_or(HashSet::new()));
+        Effect::new(move |_| LocalStorage::set("starred", starred()));
 
-        let forecast = create_resource(cx, location, |location: Option<Location>| async move {
-            let location = location?;
-            Some(Request::get(format!("{}/forecast?latitude={}&longitude={}&hourly=temperature_2m,apparent_temperature,precipitation_probability,windspeed_10m,winddirection_10m,weathercode,is_day&daily=weathercode,temperature_2m_max,precipitation_probability_max,windspeed_10m_max,winddirection_10m_dominant&timeformat=unixtime&timezone=auto", FORECAST_ENDPOINT.unwrap_or(LOCAL_SERVER), location.latitude, location.longitude).as_str())
-                    .send()
-                    .await
-                    .unwrap()
-                    .json::<Forecast>()
-                    .await
-                    .unwrap())
+        let forecast = LocalResource::new(move || {
+            let location: Option<Location> = location();
+            get_forecast(location)
         });
 
-        let (time, set_time) = create_signal(cx, CurrentTime::Now(Utc::now().timestamp()));
+        let (time, set_time) = signal(CurrentTime::Now(Utc::now().timestamp()));
 
-        let current = MaybeSignal::derive(cx, move || match forecast.read(cx)? {
-            Some(forecast) => {
+        let current = Signal::derive(move || match forecast.get().as_deref() {
+            Some(Some(forecast)) => {
+                let forecast = forecast.clone();
                 let current = izip!(
                     forecast.hourly.time,
                     forecast.hourly.temperature_2m,
@@ -135,15 +137,15 @@ fn main() {
 
                 current
             }
-            None => {
+            _ => {
                 set_palette(palette::CLEAR);
                 None
             }
         });
-        provide_context(cx, current);
+        provide_context(current);
 
-        view! { cx,
-            <Scene/>
+        view! {
+            <Scene />
             <div class=move || {
                 format!(
                     "w-screen h-screen font-sans md:grid md:grid-cols-2 lg:grid-cols-4 {}",
@@ -159,10 +161,10 @@ fn main() {
                         starred=(starred, set_starred)
                         current=current
                     />
-                    <Hourly forecast=forecast time=(time, set_time) metric=metric/>
+                    <Hourly forecast=forecast time=(time, set_time) metric=metric />
                 </div>
                 <div class="flex flex-col col-span-1 p-4 md:h-screen">
-                    <Daily forecast=forecast time=(time, set_time) metric=metric/>
+                    <Daily forecast=forecast time=(time, set_time) metric=metric />
                     <div class="flex overflow-x-auto flex-col gap-y-4 pb-2 mt-4 text-sm text-center text-white whitespace-nowrap opacity-50 transition-opacity md:flex-row md:gap-x-4 md:text-xs">
                         <a
                             target="_blank"
@@ -170,10 +172,11 @@ fn main() {
                             href="https://open-meteo.com/"
                         >
                             <Icon
-                                class="my-auto"
                                 width="16"
                                 height="16"
-                                icon=Icon::from(LuExternalLink)
+                                icon={icondata::LuExternalLink}
+                                {..}
+                                class="my-auto"
                             />
                             <span class="my-auto">Weather data by Open-Meteo.com</span>
                         </a>
@@ -183,10 +186,11 @@ fn main() {
                             href="https://github.com/jaynewey/gust/"
                         >
                             <Icon
-                                class="my-auto"
                                 width="16"
                                 height="16"
-                                icon=Icon::from(LuGitFork)
+                                icon={icondata::LuGitFork}
+                                {..}
+                                class="my-auto"
                             />
                             <span class="my-auto">Source Code</span>
                         </a>
