@@ -1,31 +1,29 @@
-use leptos_icons::{Icon, LuIcon};
-
-pub fn weather_icon(weathercode: u32, is_day: bool) -> Icon {
+pub fn weather_icon(weathercode: u32, is_day: bool) -> icondata::Icon {
     match weathercode {
         0 => {
             if is_day {
-                Icon::from(LuIcon::LuSun)
+                icondata::LuSun
             } else {
-                Icon::from(LuIcon::LuMoon)
+                icondata::LuMoon
             }
         }
         1 => {
             if is_day {
-                Icon::from(LuIcon::LuCloudSun)
+                icondata::LuCloudSun
             } else {
-                Icon::from(LuIcon::LuCloudMoon)
+                icondata::LuCloudMoon
             }
         }
-        2 => Icon::from(LuIcon::LuCloud),
-        3 => Icon::from(LuIcon::LuCloudy),
-        45 | 48 => Icon::from(LuIcon::LuCloudFog),
-        51 | 53 | 55 => Icon::from(LuIcon::LuCloudDrizzle),
-        61 | 63 | 80 | 81 => Icon::from(LuIcon::LuCloudRain),
-        65 | 82 => Icon::from(LuIcon::LuCloudRainWind),
-        56 | 57 | 66 | 67 => Icon::from(LuIcon::LuCloudHail),
-        71 | 73 | 75 | 77 | 85 | 86 => Icon::from(LuIcon::LuCloudSnow),
-        95 | 96 | 99 => Icon::from(LuIcon::LuCloudLightning),
-        _ => Icon::from(LuIcon::LuThermometer),
+        2 => icondata::LuCloud,
+        3 => icondata::LuCloudy,
+        45 | 48 => icondata::LuCloudFog,
+        51 | 53 | 55 => icondata::LuCloudDrizzle,
+        61 | 63 | 80 | 81 => icondata::LuCloudRain,
+        65 | 82 => icondata::LuCloudRainWind,
+        56 | 57 | 66 | 67 => icondata::LuCloudHail,
+        71 | 73 | 75 | 77 | 85 | 86 => icondata::LuCloudSnow,
+        95 | 96 | 99 => icondata::LuCloudLightning,
+        _ => icondata::LuThermometer,
     }
 }
 
@@ -75,25 +73,25 @@ pub fn weather_description(weathercode: u32, is_day: bool) -> &'static str {
     }
 }
 
-pub fn wind_direction_icon(wind_direction: u32) -> Icon {
+pub fn wind_direction_icon(wind_direction: u32) -> icondata::Icon {
     let wind_direction = &(wind_direction as f64);
     if (0.0..22.5).contains(wind_direction) {
-        Icon::from(LuIcon::LuArrowUp)
+        icondata::LuArrowUp
     } else if (22.5..67.5).contains(wind_direction) {
-        Icon::from(LuIcon::LuArrowUpRight)
+        icondata::LuArrowUpRight
     } else if (67.5..112.5).contains(wind_direction) {
-        Icon::from(LuIcon::LuArrowRight)
+        icondata::LuArrowRight
     } else if (112.5..157.5).contains(wind_direction) {
-        Icon::from(LuIcon::LuArrowDownRight)
+        icondata::LuArrowDownRight
     } else if (157.5..202.5).contains(wind_direction) {
-        Icon::from(LuIcon::LuArrowDown)
+        icondata::LuArrowDown
     } else if (202.5..247.5).contains(wind_direction) {
-        Icon::from(LuIcon::LuArrowDownLeft)
+        icondata::LuArrowDownLeft
     } else if (202.5..292.5).contains(wind_direction) {
-        Icon::from(LuIcon::LuArrowLeft)
+        icondata::LuArrowLeft
     } else if (292.5..347.5).contains(wind_direction) {
-        Icon::from(LuIcon::LuArrowUpLeft)
+        icondata::LuArrowUpLeft
     } else {
-        Icon::from(LuIcon::LuArrowUp)
+        icondata::LuArrowUp
     }
 }

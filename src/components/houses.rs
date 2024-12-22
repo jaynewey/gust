@@ -1,15 +1,14 @@
 use crate::palette::Palette;
-use leptos::*;
+use leptos::prelude::*;
 
 #[component]
 pub fn House(
-    cx: Scope,
     scale: f32,
     translate: (f32, f32),
     palette: ReadSignal<Palette<'static>>,
 ) -> impl IntoView {
     let (x, y) = translate;
-    view! { cx,
+    view! {
         <g transform=format!("scale({}) translate({}, {})", scale, x, y)>
             <g transform="translate(-104.28 58.12)">
                 <path
@@ -56,13 +55,12 @@ pub fn House(
 
 #[component]
 pub fn LargeHouse(
-    cx: Scope,
     scale: f32,
     translate: (f32, f32),
     palette: ReadSignal<Palette<'static>>,
 ) -> impl IntoView {
     let (x, y) = translate;
-    view! { cx,
+    view! {
         <g transform=format!("scale({}) translate({}, {})", scale, x, y)>
             <g transform="translate(43.249 91.414)">
                 <rect

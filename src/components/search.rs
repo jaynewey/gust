@@ -4,9 +4,8 @@ use gloo_net::http::Request;
 use gloo_timers::callback::Timeout;
 use itertools::Itertools;
 use leptos_icons::Icon;
-use leptos_icons::LuIcon::{LuSearch, LuStar, LuStarOff};
 
-use leptos::*;
+use leptos::prelude::*;
 
 use crate::locations::{Location, Locations};
 use crate::palette::Palette;
@@ -17,23 +16,22 @@ const DEBOUNCE_TIMEOUT: u32 = 500;
 
 #[component]
 pub fn Search(
-    cx: Scope,
     location: (ReadSignal<Option<Location>>, WriteSignal<Option<Location>>),
     starred: (
         ReadSignal<HashSet<Location>>,
         WriteSignal<HashSet<Location>>,
     ),
 ) -> impl IntoView {
-    let (palette, _) = use_context::<(ReadSignal<Palette<'_>>, WriteSignal<Palette<'_>>)>(cx)
+    let (palette, _) = use_context::<(ReadSignal<Palette<'_>>, WriteSignal<Palette<'_>>)>()
         .expect("palette context");
 
     let (location, set_location) = location;
     let (starred, set_starred) = starred;
-    let (search, set_search) = create_signal(cx, "".to_string());
+    let (search, set_search) = signal("".to_string());
 
-    let (is_focussed, set_is_focussed) = create_signal(cx, false);
+    let (is_focussed, set_is_focussed) = signal(false);
 
-    let locations = create_action(cx, |search: &String| {
+    let locations = Action::new_local(|search: &String| {
         let search = search.to_owned();
         async move {
             if search.len() > 1 {
@@ -59,13 +57,15 @@ pub fn Search(
         }
     });
 
-    create_effect(cx, move |timeout: Option<Timeout>| {
+    Effect::new(move |timeout: Option<Timeout>| {
         if let Some(timeout) = timeout {
             timeout.cancel();
         }
 
         let search = search();
-        Timeout::new(DEBOUNCE_TIMEOUT, move || locations.dispatch(search))
+        Timeout::new(DEBOUNCE_TIMEOUT, move || {
+            locations.dispatch(search);
+        })
     });
     let value = move || {
         if is_focussed() {
@@ -82,9 +82,9 @@ pub fn Search(
             .unwrap_or(false)
     };
 
-    view! { cx,
+    view! {
         <div class="flex relative gap-x-4 content-center mx-auto group">
-            <Icon class="my-auto shrink-0" width="24" height="24" icon=Icon::from(LuSearch)/>
+            <Icon width="24" height="24" icon={icondata::LuSearch} {..} class="my-auto shrink-0" />
             <div class="flex shrink">
                 <input
                     on:input=move |ev| set_search(event_target_value(&ev))
@@ -115,7 +115,7 @@ pub fn Search(
                             .map(|location| {
                                 let location_clone = location.clone();
                                 Some(
-                                    view! { cx,
+                                    view! {
                                         <button
                                             on:click=move |_| {
                                                 set_location(Some(location_clone.clone()));
@@ -158,7 +158,7 @@ pub fn Search(
                                     },
                                 )
                             })
-                            .collect_view(cx),
+                            .collect_view(),
                     )
                 }}
 
@@ -166,7 +166,7 @@ pub fn Search(
             {move || {
                 location()
                     .map(|_| {
-                        view! { cx,
+                        view! {
                             <button
                                 on:click=move |_| {
                                     if let Some(location) = location() {
@@ -184,13 +184,13 @@ pub fn Search(
                                 class=("opacity-50", !location_is_starred())
                             >
                                 <span class=("group-hover/star:hidden", location_is_starred())>
-                                    <Icon width="24" height="24" icon=Icon::from(LuStar)/>
+                                    <Icon width="24" height="24" icon=icondata::LuStar />
                                 </span>
                                 <span
                                     class="hidden"
                                     class=("group-hover/star:block", location_is_starred())
                                 >
-                                    <Icon width="24" height="24" icon=Icon::from(LuStarOff)/>
+                                    <Icon width="24" height="24" icon=icondata::LuStarOff />
                                 </span>
                             </button>
                         }

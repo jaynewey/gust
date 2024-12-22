@@ -1,8 +1,7 @@
-use leptos::*;
+use leptos::prelude::*;
 use leptos_icons::Icon;
 
 use crate::forecast::Forecast;
-use crate::locations::Location;
 use crate::palette::Palette;
 use crate::time::day_name;
 use crate::Metric;
@@ -12,23 +11,21 @@ use crate::{
 };
 use chrono::{DateTime, Datelike, FixedOffset, Month, NaiveDateTime, Utc};
 use itertools::izip;
-use leptos_icons::LuIcon::{LuDroplet, LuDroplets};
 
 #[component]
 pub fn Daily(
-    cx: Scope,
-    forecast: Resource<Option<Location>, Option<Forecast>>,
+    forecast: LocalResource<Option<Forecast>>,
     time: (ReadSignal<CurrentTime>, WriteSignal<CurrentTime>),
     metric: ReadSignal<Metric>,
 ) -> impl IntoView {
-    let (palette, _) = use_context::<(ReadSignal<Palette<'_>>, WriteSignal<Palette<'_>>)>(cx)
+    let (palette, _) = use_context::<(ReadSignal<Palette<'_>>, WriteSignal<Palette<'_>>)>()
         .expect("palette context");
     let (time, set_time) = time;
 
-    view! { cx,
+    view! {
         <div class="flex flex-col gap-y-4 mx-auto w-full rounded-3xl grow justify-stretch">
             {move || {
-                let forecast = forecast.read(cx)??;
+                let forecast = forecast.get().as_deref()?.to_owned()?;
                 Some(
                     izip!(
                         forecast.daily.time, forecast.daily.temperature_2m_max, forecast.daily
@@ -65,7 +62,7 @@ pub fn Daily(
                                 );
                             Some(
 
-                                view! { cx,
+                                view! {
                                     <button
                                         on:click=move |_| set_time(
                                             if this_time < now {
@@ -93,25 +90,25 @@ pub fn Daily(
                                             <p class="mx-auto">
                                                 {move || match metric() {
                                                     Metric::Temperature => {
-                                                        format!("{}°", temperature.round() as i32).into_view(cx)
+                                                        format!("{}°", temperature.round() as i32).into_any()
                                                     }
                                                     Metric::Precipitation => {
-                                                        format!("{}%", precipitation_probability).into_view(cx)
+                                                        format!("{}%", precipitation_probability).into_any()
                                                     }
                                                     Metric::Wind => {
 
-                                                        view! { cx,
+                                                        view! {
                                                             <span>{windspeed.round() as i32}</span>
                                                             <span class="pl-1 text-base">"km/h"</span>
                                                         }
-                                                            .into_view(cx)
+                                                            .into_any()
                                                     }
                                                 }}
 
                                             </p>
                                             {move || match metric() {
                                                 Metric::Temperature => {
-                                                    view! { cx,
+                                                    view! {
                                                         <div
                                                             class="my-auto"
                                                             title=weather_description(weathercode, true)
@@ -123,35 +120,37 @@ pub fn Daily(
                                                             />
                                                         </div>
                                                     }
-                                                        .into_view(cx)
+                                                        .into_any()
                                                 }
                                                 Metric::Precipitation => {
 
-                                                    view! { cx,
+                                                    view! {
                                                         <Icon
                                                             width="24"
                                                             height="24"
+                                                            icon={if precipitation_probability > 75 {
+                                                                icondata::LuDroplets
+                                                            } else {
+                                                                icondata::LuDroplet
+                                                            }}
+                                                            {..}
                                                             class="my-auto"
-                                                            icon=Icon::from(
-                                                                if precipitation_probability > 75 {
-                                                                    LuDroplets
-                                                                } else {
-                                                                    LuDroplet
-                                                                },
-                                                            )
                                                         />
                                                     }
+                                                        .into_any()
                                                 }
                                                 Metric::Wind => {
 
-                                                    view! { cx,
+                                                    view! {
                                                         <Icon
                                                             width="24"
                                                             height="24"
-                                                            class="my-auto"
                                                             icon=wind_direction_icon(winddirection)
+                                                            {..}
+                                                            class="my-auto"
                                                         />
                                                     }
+                                                        .into_any()
                                                 }
                                             }}
 
@@ -160,7 +159,7 @@ pub fn Daily(
                                 },
                             )
                         })
-                        .collect_view(cx),
+                        .collect_view(),
                 )
             }}
 

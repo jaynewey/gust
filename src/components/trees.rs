@@ -1,15 +1,14 @@
 use crate::palette::Palette;
-use leptos::*;
+use leptos::prelude::*;
 
 #[component]
 pub fn Tree(
-    cx: Scope,
     scale: f32,
     translate: (f32, f32),
     palette: ReadSignal<Palette<'static>>,
 ) -> impl IntoView {
     let (x, y) = translate;
-    view! { cx,
+    view! {
         <g transform=format!("scale({}) translate({}, {})", scale, x, y)>
             <g transform="translate(78.083 -5.9194)">
                 <rect
