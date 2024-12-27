@@ -109,24 +109,43 @@ fn main() {
                 );
 
                 let time = <CurrentTime as Into<i64>>::into(time());
-                let current_position = forecasts.clone().position(|(other_time, _, _, _, _, _, _, _)| {
-                     time <= other_time
-                })?;
-                
+                let current_position = forecasts
+                    .clone()
+                    .position(|(other_time, _, _, _, _, _, _, _)| time <= other_time)?;
+
                 let (prev, current) = if let Some(prev_position) = current_position.checked_sub(1) {
-                    (forecasts.nth(prev_position) as Option<Hour>, forecasts.next() as Option<Hour>)
+                    (
+                        forecasts.nth(prev_position) as Option<Hour>,
+                        forecasts.next() as Option<Hour>,
+                    )
                 } else {
                     (None, forecasts.nth(current_position) as Option<Hour>)
                 };
                 let next = forecasts.next() as Option<Hour>;
 
                 let (_, _, _, weathercode, is_day, _, _, _) = current?;
-                let prev_is_day = prev.map(|(_, _, _, _, is_day, _, _, _)| is_day).unwrap_or(false);
-                let next_is_day = next.map(|(_, _, _, _, is_day, _, _, _)| is_day).unwrap_or(false);
+                let prev_is_day = prev
+                    .map(|(_, _, _, _, is_day, _, _, _)| is_day)
+                    .unwrap_or(false);
+                let next_is_day = next
+                    .map(|(_, _, _, _, is_day, _, _, _)| is_day)
+                    .unwrap_or(false);
                 set_palette(if is_day {
                     match weathercode {
-                        0 | 1 => if !next_is_day || !prev_is_day { palette::DUSK_DAWN_SUNNY } else { palette::CLEAR },
-                        2 | 3 => if !next_is_day || !prev_is_day { palette::DUSK_DAWN } else { palette::CLOUDY },
+                        0 | 1 => {
+                            if !next_is_day || !prev_is_day {
+                                palette::DUSK_DAWN_SUNNY
+                            } else {
+                                palette::CLEAR
+                            }
+                        }
+                        2 | 3 => {
+                            if !next_is_day || !prev_is_day {
+                                palette::DUSK_DAWN
+                            } else {
+                                palette::CLOUDY
+                            }
+                        }
                         45 | 48 => palette::FOGGY,
                         56 | 57 | 66 | 67 | 71 | 73 | 75 | 77 | 85 | 86 => palette::SNOW,
                         95 | 96 | 99 => palette::THUNDER,
