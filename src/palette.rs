@@ -10,7 +10,7 @@ pub struct Palette<'a> {
     pub text: &'a str,
 }
 
-pub const SUNSET: Palette = Palette {
+pub const DUSK_DAWN_SUNNY: Palette = Palette {
     sky: "bg-amber-100",
     background: "bg-amber-100/50",
     lightest: "fill-amber-200",
@@ -76,12 +76,12 @@ pub const DRIZZLE: Palette = Palette {
     text: "text-teal-800",
 };
 
-pub const SUNRISE: Palette = Palette {
-    sky: "bg-green-50",
-    background: "bg-green-50/50",
-    lightest: "fill-green-100",
+pub const DUSK_DAWN: Palette = Palette {
+    sky: "bg-rose-50",
+    background: "bg-rose-50/50",
+    lightest: "fill-teal-100",
     light: "fill-red-200",
-    neutral: "fill-green-600",
+    neutral: "fill-teal-600",
     dark: "fill-red-500",
     darkest: "fill-emerald-700",
     text: "text-emerald-700",
@@ -129,4 +129,26 @@ pub const CLOUDY: Palette = Palette {
     dark: "fill-green-700",
     darkest: "fill-emerald-800",
     text: "text-emerald-800",
+};
+
+pub const FOGGY: Palette = Palette {
+    sky: "bg-stone-100",
+    background: "bg-stone-100/50",
+    lightest: "fill-zinc-300",
+    light: "fill-stone-200",
+    neutral: "fill-zinc-400",
+    dark: "fill-stone-400",
+    darkest: "fill-zinc-500",
+    text: "text-zinc-600",
+};
+
+pub const NIGHT_FOGGY: Palette = Palette {
+    sky: "bg-stone-600",
+    background: "bg-stone-800/50",
+    lightest: "fill-stone-400",
+    light: "fill-stone-500",
+    neutral: "fill-neutral-500",
+    dark: "fill-stone-700",
+    darkest: "fill-neutral-800",
+    text: "text-neutral-300",
 };
