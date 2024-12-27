@@ -143,7 +143,7 @@ pub fn Hourly(
 
                                                         view! {
                                                             <span>{windspeed.round() as i32}</span>
-                                                            <span class="pl-1 text-xs">"km/h"</span>
+                                                            <span class="pl-1 text-xs text-nowrap">"km/h"</span>
                                                         }
                                                             .into_any()
                                                     }
