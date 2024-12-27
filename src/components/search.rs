@@ -5,6 +5,7 @@ use gloo_timers::callback::Timeout;
 use itertools::Itertools;
 use leptos_icons::Icon;
 
+use leptos::html::Input;
 use leptos::prelude::*;
 
 use crate::locations::{Location, Locations};
@@ -22,6 +23,8 @@ pub fn Search(
         WriteSignal<HashSet<Location>>,
     ),
 ) -> impl IntoView {
+    let search_ref = NodeRef::<Input>::new();
+
     let (palette, _) = use_context::<(ReadSignal<Palette<'_>>, WriteSignal<Palette<'_>>)>()
         .expect("palette context");
 
@@ -84,9 +87,19 @@ pub fn Search(
 
     view! {
         <div class="flex relative gap-x-4 content-center mx-auto group">
-            <Icon width="24" height="24" icon={icondata::LuSearch} {..} class="my-auto shrink-0" />
+            <button
+                on:click={move |_| {
+                    if let Some(search) = search_ref.get() {
+                        let _ = search.focus();
+                    };
+                }}
+                class="hover:opacity-75 hover:scale-105 active:scale-95"
+            >
+                <Icon width="24" height="24" icon={icondata::LuSearch} {..} class="my-auto shrink-0" />
+            </button>
             <div class="flex shrink">
                 <input
+                    node_ref=search_ref
                     on:input=move |ev| set_search(event_target_value(&ev))
                     prop:value=value
                     on:focus=move |_| set_is_focussed(true)
