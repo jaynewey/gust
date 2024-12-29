@@ -108,10 +108,13 @@ fn main() {
                     forecast.hourly.windspeed_10m,
                 );
 
-                let time = <CurrentTime as Into<i64>>::into(time());
-                let current_position = forecasts
-                    .clone()
-                    .position(|(other_time, _, _, _, _, _, _, _)| time <= other_time)?;
+                let current_time = <CurrentTime as Into<i64>>::into(time());
+                let current_position =
+                    forecasts
+                        .clone()
+                        .rposition(|(forecast_time, _, _, _, _, _, _, _)| {
+                            current_time >= forecast_time
+                        })?;
 
                 let (prev, current) = if let Some(prev_position) = current_position.checked_sub(1) {
                     (
