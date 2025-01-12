@@ -5,7 +5,11 @@ module.exports = {
     fontFamily: {
       sans: ["Manrope", "sans-serif"],
     },
-    extend: {},
+    extend: {
+      transitionDuration: {
+        2000: "5000ms",
+      },
+    },
   },
   plugins: [],
   variants: {

@@ -179,7 +179,7 @@ fn main() {
         provide_context(current);
 
         view! {
-            <Scene />
+            <Scene location=location />
             <div class=move || {
                 format!(
                     "w-screen h-screen font-sans md:grid md:grid-cols-2 lg:grid-cols-4 {}",
