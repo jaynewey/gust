@@ -6,13 +6,12 @@ use crate::Metric;
 
 use crate::time::day_name;
 use crate::weather::{weather_description, weather_icon};
+use crate::Hour;
 use crate::FLAG_ICONS_ENDPOINT;
 use crate::{forecast::Forecast, CurrentTime};
 use chrono::{DateTime, Datelike, FixedOffset, Month, NaiveDateTime, Timelike, Utc};
 use leptos::prelude::*;
 use leptos_icons::Icon;
-
-pub type Hour = (i64, f32, f32, u32, bool, u32, u32, f32);
 
 #[component]
 fn LocationButton(

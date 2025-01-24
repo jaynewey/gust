@@ -23,7 +23,7 @@ pub fn Daily(
     let (time, set_time) = time;
 
     view! {
-        <div class="flex flex-col gap-y-4 mx-auto w-full rounded-3xl grow justify-stretch">
+        <div class=move || {format!("flex flex-col p-4 gap-y-4 mx-auto w-full rounded-3xl grow justify-stretch rounded-3xl backdrop-blur-sm drop-shadow-sm {}", palette().background)}>
             {move || {
                 let forecast = forecast.get().as_deref()?.to_owned()?;
                 Some(
@@ -42,8 +42,7 @@ pub fn Daily(
                                 windspeed,
                             )|
                         {
-                            let offset = FixedOffset::east_opt(forecast.utc_offset_seconds)
-                                .unwrap();
+                            let offset = FixedOffset::east_opt(forecast.utc_offset_seconds)?;
                             let naive_datetime = NaiveDateTime::from_timestamp_opt(this_time, 0)?;
                             let datetime: DateTime<FixedOffset> = DateTime::from_utc(
                                 naive_datetime,
@@ -60,6 +59,7 @@ pub fn Daily(
                                 .and_time(
                                     NaiveDateTime::from_timestamp_opt(time().into(), 0)?.time(),
                                 );
+                            let current_date = NaiveDateTime::from_timestamp_opt(time().into(), 0)?.date();
                             Some(
 
                                 view! {
@@ -72,12 +72,9 @@ pub fn Daily(
                                             },
                                         )
 
-                                        class=move || {
-                                            format!(
-                                                "flex grow items-stretch content-center justify-between rounded-3xl backdrop-blur-sm p-4 drop-shadow-sm transition-all hover:drop-shadow-md hover:scale-105 active:scale-95 active:drop-shadow-none {}",
-                                                palette().background,
-                                            )
-                                        }
+                                        class="flex grow items-stretch content-center justify-between p-4 transition-all hover:scale-105 active:scale-95"
+                                        class=("opacity-75", move || naive_datetime.date() != current_date)
+                                        class=("font-semibold", move || naive_datetime.date() == current_date)
                                     >
 
                                         <div class="flex flex-col my-auto text-left">
@@ -86,7 +83,11 @@ pub fn Daily(
                                                 {format!("{} {}", datetime.day(), month.name())}
                                             </p>
                                         </div>
-                                        <div class="flex gap-x-4 my-auto text-2xl font-bold">
+                                        <div
+                                            class="flex gap-x-4 my-auto text-2xl font-black"
+                                            class=("font-bold", move || naive_datetime.date() != current_date)
+                                        >
+
                                             <p class="mx-auto">
                                                 {move || match metric() {
                                                     Metric::Temperature => {

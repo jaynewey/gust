@@ -1,4 +1,4 @@
-use crate::{components::hills::*, palette::Palette, locations::Location};
+use crate::{components::hills::*, locations::Location, palette::Palette};
 use leptos::prelude::*;
 
 #[component]

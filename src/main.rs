@@ -25,6 +25,8 @@ use serde::{Deserialize, Serialize};
 
 use leptos_icons::Icon;
 
+pub type Hour = (i64, f32, f32, u32, bool, u32, u32, f32);
+
 #[derive(Clone)]
 pub enum CurrentTime {
     Now(i64),
@@ -195,7 +197,7 @@ fn main() {
                         starred=(starred, set_starred)
                         current=current
                     />
-                    <Hourly forecast=forecast time=(time, set_time) metric=metric />
+                    <Hourly forecast=forecast time=(time, set_time) metric=metric current=current />
                 </div>
                 <div class="flex flex-col col-span-1 p-4 md:h-screen">
                     <Daily forecast=forecast time=(time, set_time) metric=metric />

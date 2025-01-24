@@ -4,6 +4,7 @@ use leptos_icons::Icon;
 
 use crate::forecast::Forecast;
 use crate::palette::Palette;
+use crate::Hour;
 use crate::{
     weather::{weather_description, weather_icon, wind_direction_icon},
     CurrentTime,
@@ -16,6 +17,7 @@ pub fn Hourly(
     forecast: LocalResource<Option<Forecast>>,
     time: (ReadSignal<CurrentTime>, WriteSignal<CurrentTime>),
     metric: ReadSignal<Metric>,
+    current: Signal<Option<Hour>>,
 ) -> impl IntoView {
     let (palette, _) = use_context::<(ReadSignal<Palette<'_>>, WriteSignal<Palette<'_>>)>()
         .expect("palette context");
@@ -60,6 +62,16 @@ pub fn Hourly(
                                 now,
                             );
                             let end = selected.date_naive().and_hms_opt(23, 59, 59)?;
+
+                            let naive_datetime = NaiveDateTime::from_timestamp_opt(
+                                other_time,
+                                0,
+                            );
+                            let datetime: DateTime<FixedOffset> = DateTime::from_utc(
+                                naive_datetime?,
+                                offset,
+                            );
+                            let current_time = current()?.0;
                             if (start..end.timestamp())
                                 .contains(&(other_time + forecast.utc_offset_seconds as i64))
                             {
@@ -69,21 +81,11 @@ pub fn Hourly(
                                         <button
                                             on:click=move |_| set_time(CurrentTime::Later(other_time))
                                             class="flex flex-col gap-y-2 justify-center w-16 text-center transition-transform hover:scale-105 active:scale-95"
+                                            class=("opacity-75", move || other_time != current_time)
+                                            class=("font-semibold", move || other_time == current_time)
                                         >
                                             <p class="mx-auto text-xs">
-                                                {if let Some(naive_datetime) = NaiveDateTime::from_timestamp_opt(
-                                                    other_time,
-                                                    0,
-                                                ) {
-                                                    let datetime: DateTime<FixedOffset> = DateTime::from_utc(
-                                                        naive_datetime,
-                                                        offset,
-                                                    );
-                                                    format!("{:02}:{:02}", datetime.hour(), datetime.minute())
-                                                } else {
-                                                    String::from("?")
-                                                }}
-
+                                                { format!("{:02}:{:02}", datetime.hour(), datetime.minute()) }
                                             </p>
                                             {move || match metric() {
                                                 Metric::Temperature => {
