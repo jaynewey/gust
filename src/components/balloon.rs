@@ -1,7 +1,7 @@
 use crate::palette::Palette;
 use leptos::prelude::*;
 
-use crate::components::today::Hour;
+use crate::Hour;
 
 #[component]
 pub fn Balloon(

@@ -7,6 +7,12 @@
   src: url("Manrope.ttf");
 }
 
+@layer base {
+    html {
+        -webkit-tap-highlight-color: transparent;
+    }
+}
+
 @layer components {
   *::-webkit-scrollbar {
     @apply w-0.5 h-0.5;
