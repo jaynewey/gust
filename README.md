@@ -50,7 +50,7 @@ FORECAST_ENDPOINT=https://api.open-meteo.com/v1 GEOCODING_ENDPOINT=https://geoco
 
 ### Formatting and Linting
 
-`rustfmt`, [`leptosfmt`](https://github.com/avencera/rustywind) and [`rustywind`](https://github.com/avencera/rustywind) are used to format source files:
+`rustfmt`, [`leptosfmt`](https://github.com/bram209/leptosfmt) and [`rustywind`](https://github.com/avencera/rustywind) are used to format source files:
 
 ```sh
 cargo fmt
