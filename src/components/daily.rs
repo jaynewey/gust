@@ -73,8 +73,8 @@ pub fn Daily(
                                         )
 
                                         class="flex justify-between content-center items-stretch p-4 transition-all hover:scale-105 active:scale-95 grow"
-                                        class=("opacity-75", move || naive_datetime.date() != current_date)
-                                        class=("font-semibold", move || naive_datetime.date() == current_date)
+                                        class=("opacity-75", move || later.date() != current_date)
+                                        class=("font-semibold", move || later.date() == current_date)
                                     >
 
                                         <div class="flex flex-col my-auto text-left">
